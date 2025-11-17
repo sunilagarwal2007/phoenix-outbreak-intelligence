@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phoenix Outbreak Intelligence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 95%;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 15px;
+            padding: 10px 0;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .chat-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 85vh;
+            min-height: 600px;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            text-align: right;
+        }
+
+        .message-content {
+            display: inline-block;
+            max-width: 85%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            word-wrap: break-word;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.agent .message-content {
+            background: white;
+            color: #333;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom-left-radius: 5px;
+            text-align: left;
+        }
+
+        .message.agent .agent-badge {
+            display: inline-block;
+            font-size: 0.8em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .message-content h1 {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .message-content h2 {
+            font-size: 1.2em;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            color: #764ba2;
+        }
+
+        .message-content h3 {
+            font-size: 1.1em;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        .message-content ul, .message-content ol {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+
+        .message-content li {
+            margin-bottom: 5px;
+            line-height: 1.5;
+        }
+
+        .message-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        .message-content table th,
+        .message-content table td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .message-content table th {
+            background: #667eea;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading-dots {
+            display: inline-block;
+        }
+
+        .loading-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #667eea;
+            margin: 0 3px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .sample-questions {
+            margin-bottom: 15px;
+        }
+
+        .sample-questions h4 {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .sample-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .sample-btn {
+            padding: 8px 12px;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sample-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        #questionInput {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #questionInput:focus {
+            border-color: #667eea;
+        }
+
+        #askBtn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        #askBtn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        #askBtn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #c62828;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .message-content {
+                max-width: 90%;
+            }
+
+            .sample-buttons {
+                flex-direction: column;
+            }
+
+            .sample-btn {
+                width: 100%;
+            }
+
+            .chat-container {
+                height: 90vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🦠 Phoenix Outbreak Intelligence</h1>
+            <p>AI-Powered Multi-Agent Outbreak Analysis System</p>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-header">
+                <h3>💬 Ask me about outbreak risks, guidance, and resources</h3>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="message agent">
+                    <div class="message-content">
+                        <div class="agent-badge">🤖 Phoenix System</div>
+                        <p><strong>Welcome!</strong> I'm Phoenix, your outbreak intelligence assistant.</p>
+                        <p>I can help you with:</p>
+                        <ul>
+                            <li>📊 Risk analysis and trend assessment</li>
+                            <li>🎯 Public health guidance and recommendations</li>
+                            <li>🏥 Resource capacity and procurement planning</li>
+                            <li>📋 Comprehensive outbreak briefings</li>
+                        </ul>
+                        <p>Try one of the sample questions below or ask your own!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <div class="sample-questions">
+                    <h4>📝 Sample Questions:</h4>
+                    <div class="sample-buttons">
+                        {% for question in sample_questions %}
+                        <button class="sample-btn" onclick="askSampleQuestion('{{ question }}')">
+                            {{ question }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="questionInput" 
+                        placeholder="Ask a question about outbreak intelligence..."
+                        onkeypress="handleKeyPress(event)"
+                    />
+                    <button id="askBtn" onclick="askQuestion()">Ask</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const questionInput = document.getElementById('questionInput');
+        const askBtn = document.getElementById('askBtn');
+
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addMessage(content, isUser = false, agentName = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'agent'}`;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            if (!isUser && agentName) {
+                const badge = document.createElement('div');
+                badge.className = 'agent-badge';
+                badge.textContent = `🤖 ${agentName}`;
+                contentDiv.appendChild(badge);
+            }
+            
+            // Convert markdown-like formatting to HTML
+            const formattedContent = formatContent(content);
+            contentDiv.innerHTML += formattedContent;
+            
+            messageDiv.appendChild(contentDiv);
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function formatContent(content) {
+            // Helper function to convert bold text
+            function processBold(text) {
+                if (!text.includes('**')) return text;
+                let parts = text.split('**');
+                let result = '';
+                for (let j = 0; j < parts.length; j++) {
+                    if (j % 2 === 1) {
+                        result += '<strong>' + parts[j] + '</strong>';
+                    } else {
+                        result += parts[j];
+                    }
+                }
+                return result;
+            }
+            
+            // Convert markdown-like syntax to HTML - line by line to avoid $1, $2 issues
+            let lines = content.split('\n');
+            let html = [];
+            let inList = false;
+            
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i];
+                let processed = false;
+                
+                // Check for headers (### before ## before #)
+                if (line.startsWith('### ')) {
+                    if (inList) { html.push('</ul>'); inList = false; }
+                    html.push('<h3>' + processBold(line.substring(4)) + '</h3>');
+                    processed = true;
+                } else if (line.startsWith('## ')) {
+                    if (inList) { html.push('</ul>'); inList = false; }
+                    html.push('<h2>' + processBold(line.substring(3)) + '</h2>');
+                    processed = true;
+                } else if (line.startsWith('# ')) {
+                    if (inList) { html.push('</ul>'); inList = false; }
+                    html.push('<h1>' + processBold(line.substring(2)) + '</h1>');
+                    processed = true;
+                }
+                
+                // Check for list items
+                if (!processed && (line.startsWith('- ') || line.startsWith('* ')) && !line.startsWith('* ')) {
+                    if (!inList) { html.push('<ul>'); inList = true; }
+                    html.push('<li>' + processBold(line.substring(2)) + '</li>');
+                    processed = true;
+                } else if (!processed && line.match(/^\d+\. /)) {
+                    if (!inList) { html.push('<ul>'); inList = true; }
+                    let listText = line.replace(/^\d+\. /, '');
+                    html.push('<li>' + processBold(listText) + '</li>');
+                    processed = true;
+                }
+                
+                // Regular line
+                if (!processed) {
+                    if (inList && line.trim() !== '') {
+                        html.push('</ul>');
+                        inList = false;
+                    }
+                    
+                    if (line.trim() !== '') {
+                        html.push(processBold(line) + '<br>');
+                    } else if (!inList) {
+                        html.push('<br>');
+                    }
+                }
+            }
+            
+            if (inList) {
+                html.push('</ul>');
+            }
+            
+            return html.join('');
+        }
+
+        function showLoading() {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.id = 'loadingIndicator';
+            loadingDiv.innerHTML = `
+                <div class="loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <p style="margin-top: 10px; color: #666;">Analyzing with multi-agent system...</p>
+            `;
+            chatMessages.appendChild(loadingDiv);
+            scrollToBottom();
+        }
+
+        function hideLoading() {
+            const loading = document.getElementById('loadingIndicator');
+            if (loading) {
+                loading.remove();
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = `❌ Error: ${message}`;
+            chatMessages.appendChild(errorDiv);
+            scrollToBottom();
+        }
+
+        async function askQuestion() {
+            const question = questionInput.value.trim();
+            
+            if (!question) {
+                alert('Please enter a question!');
+                return;
+            }
+
+            // Add user message
+            addMessage(question, true);
+            
+            // Clear input
+            questionInput.value = '';
+            
+            // Disable button
+            askBtn.disabled = true;
+            askBtn.textContent = 'Analyzing...';
+            
+            // Show loading
+            showLoading();
+
+            try {
+                const response = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question: question })
+                });
+
+                hideLoading();
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to get response');
+                }
+
+                const data = await response.json();
+                
+                // Add agent response
+                addMessage(data.answer, false, data.agent);
+
+            } catch (error) {
+                hideLoading();
+                showError(error.message);
+            } finally {
+                // Re-enable button
+                askBtn.disabled = false;
+                askBtn.textContent = 'Ask';
+            }
+        }
+
+        function askSampleQuestion(question) {
+            questionInput.value = question;
+            askQuestion();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                askQuestion();
+            }
+        }
+
+        // Focus input on load
+        window.addEventListener('load', () => {
+            questionInput.focus();
+        });
+    </script>
+</body>
+</html>
