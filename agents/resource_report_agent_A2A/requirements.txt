@@ -1,0 +1,37 @@
+# Resource Report Agent (A2A) specific requirements
+# Additional dependencies for Cloud Run deployment
+
+# PDF Generation
+reportlab>=4.0.0
+pypdf2>=3.0.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Geographic Analysis  
+googlemaps>=4.10.0
+geopy>=2.4.0
+
+# Data Processing
+pandas>=2.1.0
+numpy>=1.24.0
+scipy>=1.11.0
+
+# Database Integration
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0
+
+# Cloud Run Dependencies
+flask>=2.3.0
+gunicorn>=21.2.0
+google-cloud-run>=0.9.0
+google-cloud-storage>=2.10.0
+
+# Async Processing
+celery>=5.3.0
+redis>=5.0.0
+
+# Cost Estimation
+openpyxl>=3.1.0
+
+# Monitoring
+prometheus-client>=0.17.0
