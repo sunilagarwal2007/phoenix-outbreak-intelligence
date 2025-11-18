@@ -2,7 +2,6 @@
 
 **AI-Powered Multi-Agent System for Early Outbreak Detection, Public Guidance & Rapid Response**
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://python.org)
 [![Google Cloud](https://img.shields.io/badge/Google%20Cloud-ADK%20%7C%20BigQuery%20%7C%20Cloud%20Run-red.svg)](https://cloud.google.com)
 ## 📌 Project Summary
