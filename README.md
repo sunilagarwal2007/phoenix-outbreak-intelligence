@@ -336,6 +336,22 @@ export PORT=5002                                  # Local development port
 export GOOGLE_MAPS_API_KEY="your-api-key"       # For full Maps MCP features
 export REGION="us-central1"                      # GCP region for deployment
 ```
+---
+
+## 🎬 Screenshot
+
+<img width="1208" height="866" alt="image" src="https://github.com/user-attachments/assets/b447a900-6864-4edb-a29e-0946e17c92e8" />
+
+Question: What is the COVID-19 risk level in California?
+
+<img width="1209" height="1431" alt="screencapture-phoenix-webapp-197" src="https://github.com/user-attachments/assets/8362bb0b-1cf1-42cf-b447-e8d593890be8" />
+
+Question: Should I cancel my family gathering this weekend?
+<img width="1199" height="1082" alt="screencapture-phoenix-webapp-197666350447-us-central1-run-app-2025-12-07-12_51_49" src="https://github.com/user-attachments/assets/4463e28a-2f93-4849-ad51-27546e5af0b5" />
+
+Question: I got fever , What should I do ?
+<img width="827" height="1650" alt="screencapture-phoenix-webapp-1971" src="https://github.com/user-attachments/assets/a129a9f1-b38b-4df4-a1a6-f10f28f3a898" />
+
 
 ---
 
